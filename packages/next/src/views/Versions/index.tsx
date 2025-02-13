@@ -1,6 +1,7 @@
 import { Gutter, ListQueryProvider, SetDocumentStepNav } from '@payloadcms/ui'
 import { notFound } from 'next/navigation.js'
 import {
+  captureError,
   type EditViewComponent,
   logError,
   type PaginatedDocs,

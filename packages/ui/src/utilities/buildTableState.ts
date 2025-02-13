@@ -8,7 +8,7 @@ import type {
   SanitizedCollectionConfig,
 } from 'payload'
 
-import { formatErrors } from 'payload'
+import { captureError, formatErrors } from 'payload'
 import { isNumber } from 'payload/shared'
 
 import type { Column } from '../elements/Table/index.js'
@@ -50,7 +50,7 @@ export const buildTableStateHandler = async (
     const res = await buildTableState(args)
     return res
   } catch (err) {
-    req.payload.logger.error({ err, msg: `There was an error building form state` })
+    await captureError({ err, msg: `There was an error building form state`, req })
 
     if (err.message === 'Could not find field schema for given path') {
       return {

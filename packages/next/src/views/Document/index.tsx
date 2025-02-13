@@ -5,7 +5,7 @@ import { RenderServerComponent } from '@payloadcms/ui/elements/RenderServerCompo
 import { formatAdminURL, isEditing as getIsEditing } from '@payloadcms/ui/shared'
 import { buildFormState } from '@payloadcms/ui/utilities/buildFormState'
 import { notFound, redirect } from 'next/navigation.js'
-import { logError } from 'payload'
+import { captureError, logError } from 'payload'
 import React from 'react'
 
 import type { GenerateEditViewMetadata } from './getMetaBySegment.js'
@@ -390,7 +390,12 @@ export const Document: React.FC<AdminViewProps> = async (args) => {
       throw error
     }
 
-    logError({ err: error, payload: args.initPageResult.req.payload })
+    await captureError({
+      collectionSlug: args?.initPageResult?.collectionConfig?.slug,
+      err: error,
+      msg: `Failed to render document on - ${args.initPageResult.req?.url}`,
+      req: args.initPageResult.req,
+    })
 
     if (error.message === 'not-found') {
       notFound()
